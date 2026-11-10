@@ -10,9 +10,12 @@ import { Footer } from './components/Footer';
 
 export function App() {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
-    // Check localStorage or default to dark
-    const saved = localStorage.getItem('theme');
-    if (saved) return saved === 'dark';
+    try {
+      const saved = localStorage.getItem('theme');
+      if (saved) return saved === 'dark';
+    } catch {
+      // Ignore security errors in strict browsing mode
+    }
     return true;
   });
 
@@ -20,10 +23,18 @@ export function App() {
     const root = document.documentElement;
     if (darkMode) {
       root.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
+      try {
+        localStorage.setItem('theme', 'dark');
+      } catch {
+        // Ignore
+      }
     } else {
       root.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
+      try {
+        localStorage.setItem('theme', 'light');
+      } catch {
+        // Ignore
+      }
     }
   }, [darkMode]);
 
